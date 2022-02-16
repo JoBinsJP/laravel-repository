@@ -2,26 +2,37 @@
 
 namespace JoBins\LaravelRepository;
 
-use JoBins\LaravelRepository\Commands\LaravelRepositoryCommand;
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Illuminate\Support\ServiceProvider;
+use JoBins\LaravelRepository\Providers\RepositoryEventServiceProvider;
 
 /**
  * Class LaravelRepositoryServiceProvider
  *
  * @package JoBins\LaravelRepository
  */
-class LaravelRepositoryServiceProvider extends PackageServiceProvider
+class LaravelRepositoryServiceProvider extends ServiceProvider
 {
-    public function configurePackage(Package $package): void
+    /**
+     * Bootstrap the application services.
+     *
+     * @return void
+     */
+    public function boot(): void
     {
-        /*
-         * This class is a Package Service Provider
-         *
-         * More info: https://github.com/spatie/laravel-package-tools
-         */
-        $package->name('laravel-repository')->hasConfigFile()->hasViews()->hasMigration(
-            'create_laravel-repository_table'
-        )->hasCommand(LaravelRepositoryCommand::class);
+        $this->publishes([
+            __DIR__.'/../config/repository.php' => config_path('repository.php'),
+        ]);
+
+        $this->mergeConfigFrom(__DIR__.'/../config/repository.php', 'repository');
+    }
+
+    /**
+     * Register the application services.
+     *
+     * @return void
+     */
+    public function register(): void
+    {
+        $this->app->register(RepositoryEventServiceProvider::class);
     }
 }
