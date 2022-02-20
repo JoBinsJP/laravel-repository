@@ -21,12 +21,12 @@ interface RepositoryInterface
 
     public function resetFilters(): self;
 
-    public function filter(Filterable $filter): self;
+    public function filter(FilterCriteria $filter): self;
 
     public function removeFilter(string $filter): self;
 
     /**
-     * @return Collection<Filterable>
+     * @return Collection<FilterCriteria>
      */
     public function getFilters(): Collection;
 

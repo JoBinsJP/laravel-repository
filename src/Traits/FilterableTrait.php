@@ -3,7 +3,7 @@
 namespace JoBins\LaravelRepository\Traits;
 
 use Illuminate\Support\Collection;
-use JoBins\LaravelRepository\Contracts\Filterable;
+use JoBins\LaravelRepository\Contracts\FilterCriteria;
 
 /**
  * Trait CriteriaTrait
@@ -15,7 +15,7 @@ trait FilterableTrait
     protected bool $skipFilters = false;
 
     /**
-     * @var Collection<Filterable>
+     * @var Collection<FilterCriteria>
      */
     protected Collection $filters;
 
@@ -33,7 +33,7 @@ trait FilterableTrait
         return $this;
     }
 
-    public function filter(Filterable $filter): self
+    public function filter(FilterCriteria $filter): self
     {
         $this->filters->push($filter);
 
@@ -42,13 +42,13 @@ trait FilterableTrait
 
     public function removeFilter(string $filter): self
     {
-        $this->filters->reject(fn(Filterable $filter) => get_class($filter) === $filter);
+        $this->filters->reject(fn(FilterCriteria $filter) => get_class($filter) === $filter);
 
         return $this;
     }
 
     /**
-     * @return Collection<Filterable>
+     * @return Collection<FilterCriteria>
      */
     public function getFilters(): Collection
     {
@@ -64,7 +64,7 @@ trait FilterableTrait
         $filters = $this->getFilters();
 
         if ( $filters->isNotEmpty() ) {
-            $filters->each(fn(Filterable $filter) => $this->model = $filter->apply($this->model, $this));
+            $filters->each(fn(FilterCriteria $filter) => $this->model = $filter->apply($this->model));
         }
 
         return $this;
