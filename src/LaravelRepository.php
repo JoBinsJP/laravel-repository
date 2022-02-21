@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\Collection;
 use JoBins\LaravelRepository\Contracts\RepositoryInterface;
+use JoBins\LaravelRepository\Exceptions\LaravelRepositoryException;
 use JoBins\LaravelRepository\Traits\EloquentModelTrait;
 use JoBins\LaravelRepository\Traits\FilterableTrait;
 use JoBins\LaravelRepository\Traits\Presentable;
 use JoBins\LaravelRepository\Traits\ScopeTrait;
+use JoBins\LaravelRepository\Traits\SoftDeletedQuery;
 
 /**
  * Class LaravelRepository
@@ -25,6 +27,7 @@ abstract class LaravelRepository implements RepositoryInterface
     use EloquentModelTrait;
     use ScopeTrait;
     use Presentable;
+    use SoftDeletedQuery;
 
     /**
      * @throws Exceptions\LaravelRepositoryException
@@ -224,6 +227,30 @@ abstract class LaravelRepository implements RepositoryInterface
     public function deleteWhere(array $where): void
     {
         $this->makeQueryBuilder(fn() => $this->model->where($where)->delete());
+    }
+
+    /**
+     * @param string $column
+     * @param array  $values
+     *
+     * @return void
+     * @throws LaravelRepositoryException
+     */
+    public function deleteWhereIn(string $column, array $values): void
+    {
+        $this->makeQueryBuilder(fn() => $this->model->whereIn($column, $values)->delete());
+    }
+
+    /**
+     * @param string $column
+     * @param array  $values
+     *
+     * @return void
+     * @throws LaravelRepositoryException
+     */
+    public function deleteWhereNotIn(string $column, array $values): void
+    {
+        $this->makeQueryBuilder(fn() => $this->model->whereNotIn($column, $values)->delete());
     }
 
     public function orderBy(string $column, string $direction = 'asc'): self
