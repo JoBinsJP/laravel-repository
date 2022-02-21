@@ -41,20 +41,11 @@ abstract class LaravelRepository implements RepositoryInterface
      * @param array $columns
      *
      * @return Collection|array
-     * @throws BindingResolutionException
      * @throws Exceptions\LaravelRepositoryException
      */
     public function all(array $columns = ['*']): Collection|array
     {
-        $this->applyFilters();
-        $this->applyScope();
-
-        $results = $this->model->get($columns);
-
-        $this->resetModel();
-        $this->resetScope();
-
-        return $this->present($results);
+        return $this->makeQueryBuilder(fn() => $this->model->get($columns));
     }
 
     /**
@@ -62,21 +53,13 @@ abstract class LaravelRepository implements RepositoryInterface
      * @param array    $columns
      *
      * @return AbstractPaginator|array
-     * @throws BindingResolutionException
      * @throws Exceptions\LaravelRepositoryException
      */
     public function paginate(?int $limit = null, array $columns = ['*']): AbstractPaginator|array
     {
-        $this->applyFilters();
-        $this->applyScope();
+        $limit = $limit ?: config('repository.pagination.limit');
 
-        $limit   = $limit ?: config('repository.pagination.limit');
-        $results = $this->model->paginate($limit, $columns);
-
-        $this->resetModel();
-        $this->resetScope();
-
-        return $this->present($results);
+        return $this->makeQueryBuilder(fn() => $this->model->paginate($limit, $columns));
     }
 
     /**
@@ -84,20 +67,99 @@ abstract class LaravelRepository implements RepositoryInterface
      * @param array      $columns
      *
      * @return Model|array
-     * @throws BindingResolutionException
      * @throws Exceptions\LaravelRepositoryException
      * @throws ModelNotFoundException
      */
     public function find(int|string $id, array $columns = ['*']): Model|array
     {
-        $this->applyFilters();
-        $this->applyScope();
+        return $this->makeQueryBuilder(fn() => $this->model->findOrFail($id, $columns));
+    }
 
-        $result = $this->model->findOrFail($id, $columns);
+    /**
+     * @param string $field
+     * @param mixed  $value
+     * @param array  $columns
+     *
+     * @return Model|array
+     * @throws Exceptions\LaravelRepositoryException
+     */
+    public function findByField(string $field, mixed $value, array $columns = ['*']): Model|array
+    {
+        return $this->makeQueryBuilder(fn() => $this->model->where($field, $value)->firstOrFail($columns));
+    }
 
-        $this->resetModel();
-        $this->resetScope();
+    /**
+     * @param string $field
+     * @param mixed  $value
+     * @param array  $columns
+     *
+     * @return Collection|array
+     * @throws Exceptions\LaravelRepositoryException
+     */
+    public function getByField(string $field, mixed $value, array $columns = ['*']): Collection|array
+    {
+        return $this->makeQueryBuilder(fn() => $this->model->where($field, $value)->get($columns));
+    }
 
-        return $this->present($result);
+    /**
+     * @param array $conditions
+     * @param array $columns
+     *
+     * @return Collection|array
+     * @throws Exceptions\LaravelRepositoryException
+     */
+    public function getWhere(array $conditions, array $columns = ['*']): Collection|array
+    {
+        return $this->makeQueryBuilder(fn() => $this->model->where($conditions)->get($columns));
+    }
+
+    /**
+     * @param string $field
+     * @param array  $values
+     * @param array  $columns
+     *
+     * @return Collection|array
+     * @throws Exceptions\LaravelRepositoryException
+     */
+    public function getWhereIn(string $field, array $values, array $columns = ['*']): Collection|array
+    {
+        return $this->makeQueryBuilder(fn() => $this->model->whereIn($field, $values)->get($columns));
+    }
+
+    /**
+     * @param string $field
+     * @param array  $values
+     * @param array  $columns
+     *
+     * @return Collection|array
+     * @throws Exceptions\LaravelRepositoryException
+     */
+    public function getWhereNotIn(string $field, array $values, array $columns = ['*']): Collection|array
+    {
+        return $this->makeQueryBuilder(fn() => $this->model->whereNotIn($field, $values)->get($columns));
+    }
+
+    /**
+     * @param string $field
+     * @param array  $values
+     * @param array  $columns
+     *
+     * @return Collection|array
+     * @throws Exceptions\LaravelRepositoryException
+     */
+    public function getWhereBetween(string $field, array $values, array $columns = ['*']): Collection|array
+    {
+        return $this->makeQueryBuilder(fn() => $this->model->whereBetween($field, $values)->get($columns));
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return Model|array
+     * @throws Exceptions\LaravelRepositoryException
+     */
+    public function create(array $data): Model|array
+    {
+        return $this->makeQueryBuilder(fn() => $this->model->create($data));
     }
 }

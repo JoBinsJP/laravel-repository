@@ -2,9 +2,11 @@
 
 namespace JoBins\LaravelRepository\Traits;
 
+use Closure;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use JoBins\LaravelRepository\Exceptions\LaravelRepositoryException;
 
 /**
@@ -19,12 +21,17 @@ trait EloquentModelTrait
     abstract public function model(): string;
 
     /**
-     * @throws BindingResolutionException
      * @throws LaravelRepositoryException
      */
     protected function makeModel(): void
     {
-        $model = $this->app->make($this->model());
+        try {
+            $model = $this->app->make($this->model());
+        } catch (BindingResolutionException $exception) {
+            throw new LaravelRepositoryException(
+                sprintf('Unable to resolve model: %s. Error: %s', $this->model(), $exception->getMessage())
+            );
+        }
 
         if ( !$model instanceof Model ) {
             throw new LaravelRepositoryException(
@@ -37,11 +44,29 @@ trait EloquentModelTrait
 
     /**
      * @return void
-     * @throws BindingResolutionException
      * @throws LaravelRepositoryException
      */
     protected function resetModel(): void
     {
         $this->makeModel();
+    }
+
+    /**
+     * @param Closure $callable
+     *
+     * @return Collection|Model|array
+     * @throws LaravelRepositoryException
+     */
+    protected function makeQueryBuilder(Closure $callable): Collection|Model|array
+    {
+        $this->applyFilters();
+        $this->applyScope();
+
+        $result = $callable();
+
+        $this->resetModel();
+        $this->resetScope();
+
+        return $this->present($result);
     }
 }

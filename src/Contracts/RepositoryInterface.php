@@ -36,6 +36,8 @@ interface RepositoryInterface
 
     public function setTransformer(TransformerAbstract $transformer): self;
 
+    public function resetTransformer(): self;
+
     public function skipTransformer(bool $skip = true): self;
 
     public function setIncludes(array|string $includes): self;
@@ -74,6 +76,74 @@ interface RepositoryInterface
      * @throws ModelNotFoundException
      */
     public function find(int|string $id, array $columns = ['*']): Model|array;
+
+    /**
+     * @param string $field
+     * @param mixed  $value
+     * @param array  $columns
+     *
+     * @return Model|array
+     * @throws LaravelRepositoryException
+     * @throws ModelNotFoundException
+     */
+    public function findByField(string $field, mixed $value, array $columns = ['*']): Model|array;
+
+    /**
+     * @param string $field
+     * @param mixed  $value
+     * @param array  $columns
+     *
+     * @return Collection|array
+     * @throws LaravelRepositoryException
+     */
+    public function getByField(string $field, mixed $value, array $columns = ['*']): Collection|array;
+
+    /**
+     * @param array $conditions
+     * @param array $columns
+     *
+     * @return Collection|array
+     * @throws LaravelRepositoryException
+     */
+    public function getWhere(array $conditions, array $columns = ['*']): Collection|array;
+
+    /**
+     * @param string $field
+     * @param array  $values
+     * @param array  $columns
+     *
+     * @return Collection|array
+     * @throws LaravelRepositoryException
+     */
+    public function getWhereIn(string $field, array $values, array $columns = ['*']): Collection|array;
+
+    /**
+     * @param string $field
+     * @param array  $values
+     * @param array  $columns
+     *
+     * @return Collection|array
+     * @throws LaravelRepositoryException
+     */
+    public function getWhereNotIn(string $field, array $values, array $columns = ['*']): Collection|array;
+
+    /**
+     * @param string $field
+     * @param array  $values
+     * @param array  $columns
+     *
+     * @return Collection|array
+     * @throws LaravelRepositoryException
+     */
+    public function getWhereBetween(string $field, array $values, array $columns = ['*']): Collection|array;
+
+    /**
+     * @param array $data
+     *
+     * @return Model|array
+     * @throws LaravelRepositoryException
+     */
+    public function create(array $data): Model|array;
 
     /** ******************* /Repository Methods ********************** */
 }

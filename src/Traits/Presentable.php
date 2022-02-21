@@ -34,6 +34,13 @@ trait Presentable
         return $this;
     }
 
+    public function resetTransformer(): self
+    {
+        $this->transformer = null;
+
+        return $this;
+    }
+
     public function setIncludes(array|string $includes): self
     {
         if ( is_array($includes) ) {
