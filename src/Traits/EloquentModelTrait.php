@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\Collection;
 use JoBins\LaravelRepository\Exceptions\LaravelRepositoryException;
 
@@ -54,10 +55,10 @@ trait EloquentModelTrait
     /**
      * @param Closure $callable
      *
-     * @return Collection|Model|array
+     * @return Collection|Model|AbstractPaginator|array
      * @throws LaravelRepositoryException
      */
-    protected function makeQueryBuilder(Closure $callable): Collection|Model|array
+    protected function makeQueryBuilder(Closure $callable): Collection|Model|AbstractPaginator|array
     {
         $this->applyFilters();
         $this->applyScope();

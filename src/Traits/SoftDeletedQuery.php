@@ -2,8 +2,6 @@
 
 namespace JoBins\LaravelRepository\Traits;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
-
 /**
  * Trait SoftDeletedQuery
  *
@@ -13,18 +11,18 @@ trait SoftDeletedQuery
 {
     public function onlyTrashed(): self
     {
-        /** @var SoftDeletes $model */
-        $model       = $this->model;
-        $this->model = $model::onlyTrashed();
+        $this->scopeQuery(function ($query) {
+            return $query->onlyTrashed();
+        });
 
         return $this;
     }
 
     public function withTrashed(): self
     {
-        /** @var SoftDeletes $model */
-        $model       = $this->model;
-        $this->model = $model::withTrashed();
+        $this->scopeQuery(function ($query) {
+            return $query->withTrashed();
+        });
 
         return $this;
     }
