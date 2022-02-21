@@ -4,6 +4,7 @@ namespace JoBins\LaravelRepository;
 
 use Illuminate\Support\ServiceProvider;
 use JoBins\LaravelRepository\Providers\RepositoryEventServiceProvider;
+use JoBins\LaravelRepository\Providers\VendorOverrideServiceProvider;
 
 /**
  * Class LaravelRepositoryServiceProvider
@@ -34,5 +35,6 @@ class LaravelRepositoryServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(RepositoryEventServiceProvider::class);
+        $this->app->register(VendorOverrideServiceProvider::class);
     }
 }

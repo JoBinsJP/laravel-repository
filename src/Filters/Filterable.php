@@ -39,4 +39,14 @@ class Filterable implements FilterCriteria
 
         return $query;
     }
+
+    public function preHook(Builder $query, array $filters): Builder
+    {
+        return $query;
+    }
+
+    public function postHook(Builder $query, array $filters): Builder
+    {
+        return $query;
+    }
 }

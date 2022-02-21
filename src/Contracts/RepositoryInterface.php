@@ -184,6 +184,24 @@ interface RepositoryInterface
      */
     public function deleteWhere(array $where): void;
 
+    /**
+     * @param string $column
+     * @param array  $values
+     *
+     * @return void
+     * @throws LaravelRepositoryException
+     */
+    public function deleteWhereIn(string $column, array $values): void;
+
+    /**
+     * @param string $column
+     * @param array  $values
+     *
+     * @return void
+     * @throws LaravelRepositoryException
+     */
+    public function deleteWhereNotIn(string $column, array $values): void;
+
     public function orderBy(string $column, string $direction = 'asc'): self;
 
     public function with(string|array $relations): self;
