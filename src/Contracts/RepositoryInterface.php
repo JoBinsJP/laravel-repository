@@ -2,6 +2,7 @@
 
 namespace JoBins\LaravelRepository\Contracts;
 
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\AbstractPaginator;
@@ -48,6 +49,12 @@ interface RepositoryInterface
 
     /** ********************* /Transformers ************************** */
 
+    /** ********************* Scopes ********************************* */
+
+    public function scopeQuery(Closure $scopeQuery): self;
+
+    /** ********************* /Scopes ******************************** */
+
     /** ******************** Repository Methods ********************** */
 
     /**
@@ -68,14 +75,14 @@ interface RepositoryInterface
     public function paginate(?int $limit = null, array $columns = ['*']): AbstractPaginator|array;
 
     /**
-     * @param int|string $id
+     * @param int|string $modelId
      * @param array      $columns
      *
      * @return Model|array
      * @throws LaravelRepositoryException
      * @throws ModelNotFoundException
      */
-    public function find(int|string $id, array $columns = ['*']): Model|array;
+    public function find(int|string $modelId, array $columns = ['*']): Model|array;
 
     /**
      * @param string $field
@@ -144,6 +151,42 @@ interface RepositoryInterface
      * @throws LaravelRepositoryException
      */
     public function create(array $data): Model|array;
+
+    /**
+     * @param array      $data
+     * @param int|string $modelId
+     *
+     * @return Model|array
+     * @throws LaravelRepositoryException
+     */
+    public function update(array $data, int|string $modelId): Model|array;
+
+    /**
+     * @param array $queries
+     * @param array $values
+     *
+     * @return Model|array
+     * @throws LaravelRepositoryException
+     */
+    public function updateOrCreate(array $queries, array $values): Model|array;
+
+    /**
+     * @param int|string $modelId
+     *
+     * @throws LaravelRepositoryException
+     */
+    public function delete(int|string $modelId): void;
+
+    /**
+     * @param array $where
+     *
+     * @throws LaravelRepositoryException
+     */
+    public function deleteWhere(array $where): void;
+
+    public function orderBy(string $column, string $direction = 'asc'): self;
+
+    public function with(string|array $relations): self;
 
     /** ******************* /Repository Methods ********************** */
 }

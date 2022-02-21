@@ -63,16 +63,16 @@ abstract class LaravelRepository implements RepositoryInterface
     }
 
     /**
-     * @param int|string $id
+     * @param int|string $modelId
      * @param array      $columns
      *
      * @return Model|array
      * @throws Exceptions\LaravelRepositoryException
      * @throws ModelNotFoundException
      */
-    public function find(int|string $id, array $columns = ['*']): Model|array
+    public function find(int|string $modelId, array $columns = ['*']): Model|array
     {
-        return $this->makeQueryBuilder(fn() => $this->model->findOrFail($id, $columns));
+        return $this->makeQueryBuilder(fn() => $this->model->findOrFail($modelId, $columns));
     }
 
     /**
@@ -161,5 +161,82 @@ abstract class LaravelRepository implements RepositoryInterface
     public function create(array $data): Model|array
     {
         return $this->makeQueryBuilder(fn() => $this->model->create($data));
+    }
+
+    /**
+     * @param array      $data
+     * @param int|string $modelId
+     *
+     * @return Model|array
+     * @throws Exceptions\LaravelRepositoryException
+     */
+    public function update(array $data, int|string $modelId): Model|array
+    {
+        return $this->makeQueryBuilder(function () use ($data, $modelId) {
+            $temporarySkipTransformer = $this->skipTransformer;
+            $this->skipTransformer(true);
+
+            $model = $this->model->findOrFail($modelId);
+
+            $model->update($data);
+            $this->skipTransformer($temporarySkipTransformer);
+
+            return $model;
+        });
+    }
+
+    /**
+     * @param array $queries
+     * @param array $values
+     *
+     * @return Model|array
+     * @throws Exceptions\LaravelRepositoryException
+     */
+    public function updateOrCreate(array $queries, array $values): Model|array
+    {
+        return $this->makeQueryBuilder(function () use ($queries, $values) {
+            $temporarySkipTransformer = $this->skipTransformer;
+            $this->skipTransformer(true);
+
+            $model = $this->model->updateOrCreate($queries, $values);
+
+            $this->skipTransformer($temporarySkipTransformer);
+
+            return $model;
+        });
+    }
+
+    /**
+     * @param int|string $modelId
+     *
+     * @throws Exceptions\LaravelRepositoryException
+     */
+    public function delete(int|string $modelId): void
+    {
+        $this->makeQueryBuilder(fn() => $this->model->delete($modelId));
+    }
+
+    /**
+     * @param array $where
+     *
+     * @throws Exceptions\LaravelRepositoryException
+     */
+    public function deleteWhere(array $where): void
+    {
+        $this->makeQueryBuilder(fn() => $this->model->where($where)->delete());
+    }
+
+    public function orderBy(string $column, string $direction = 'asc'): self
+    {
+        $this->model = $this->model->orderBy($column, $direction);
+
+        return $this;
+    }
+
+    public function with(string|array $relations): self
+    {
+        $this->model = $this->model->with($relations);
+
+        return $this;
     }
 }

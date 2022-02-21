@@ -2,6 +2,8 @@
 
 namespace JoBins\LaravelRepository\Traits;
 
+use Closure;
+
 /**
  * Trait ScopeTrait
  *
@@ -9,7 +11,14 @@ namespace JoBins\LaravelRepository\Traits;
  */
 trait ScopeTrait
 {
-    protected \Closure|null $scopeQuery = null;
+    protected Closure|null $scopeQuery = null;
+
+    public function scopeQuery(Closure $scopeQuery): self
+    {
+        $this->scopeQuery = $scopeQuery;
+
+        return $this;
+    }
 
     protected function resetScope(): self
     {
