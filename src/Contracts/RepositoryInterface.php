@@ -171,7 +171,7 @@ interface RepositoryInterface
      * @return Model|array
      * @throws LaravelRepositoryException
      */
-    public function updateOrCreate(array $queries, array $values): Model|array;
+    public function updateOrCreate(array $queries, array $values = []): Model|array;
 
     /**
      * @param int|string $modelId
