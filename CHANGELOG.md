@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-repository` will be documented in this file.
 
+## v1.0.3 - 2022-02-22
+
+- data presenting issue on delete methods fixed.
+
 ## v1.0.2 - 2022-02-22
 
 - `getBuilder` method added
