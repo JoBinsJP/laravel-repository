@@ -195,7 +195,7 @@ abstract class LaravelRepository implements RepositoryInterface
      * @return Model|array
      * @throws Exceptions\LaravelRepositoryException
      */
-    public function updateOrCreate(array $queries, array $values): Model|array
+    public function updateOrCreate(array $queries, array $values = []): Model|array
     {
         return $this->makeQueryBuilder(function () use ($queries, $values) {
             $temporarySkipTransformer = $this->skipTransformer;
