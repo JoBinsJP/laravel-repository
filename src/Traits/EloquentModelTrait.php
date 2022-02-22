@@ -21,6 +21,14 @@ trait EloquentModelTrait
 
     abstract public function model(): string;
 
+    public function getBuilder(): Builder
+    {
+        $this->applyFilters();
+        $this->applyScope();
+
+        return $this->model;
+    }
+
     /**
      * @throws LaravelRepositoryException
      */
