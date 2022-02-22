@@ -62,12 +62,15 @@ trait EloquentModelTrait
 
     /**
      * @param Closure $callable
+     * @param bool    $presentable
      *
-     * @return Collection|Model|AbstractPaginator|array
+     * @return Collection|Model|AbstractPaginator|array|bool
      * @throws LaravelRepositoryException
      */
-    protected function makeQueryBuilder(Closure $callable): Collection|Model|AbstractPaginator|array
-    {
+    protected function makeQueryBuilder(
+        Closure $callable,
+        bool $presentable = true
+    ): Collection|Model|AbstractPaginator|array|bool {
         $this->applyFilters();
         $this->applyScope();
 
@@ -76,6 +79,10 @@ trait EloquentModelTrait
         $this->resetModel();
         $this->resetScope();
 
-        return $this->present($result);
+        if ( $presentable ) {
+            return $this->present($result);
+        }
+
+        return $result;
     }
 }
