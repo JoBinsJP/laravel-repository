@@ -216,7 +216,7 @@ abstract class LaravelRepository implements RepositoryInterface
      */
     public function delete(int|string $modelId): void
     {
-        $this->makeQueryBuilder(fn() => $this->model->delete($modelId));
+        $this->makeQueryBuilder(fn() => $this->model->delete($modelId), false);
     }
 
     /**
@@ -226,7 +226,7 @@ abstract class LaravelRepository implements RepositoryInterface
      */
     public function deleteWhere(array $where): void
     {
-        $this->makeQueryBuilder(fn() => $this->model->where($where)->delete());
+        $this->makeQueryBuilder(fn() => $this->model->where($where)->delete(), false);
     }
 
     /**
@@ -238,7 +238,7 @@ abstract class LaravelRepository implements RepositoryInterface
      */
     public function deleteWhereIn(string $column, array $values): void
     {
-        $this->makeQueryBuilder(fn() => $this->model->whereIn($column, $values)->delete());
+        $this->makeQueryBuilder(fn() => $this->model->whereIn($column, $values)->delete(), false);
     }
 
     /**
@@ -250,7 +250,7 @@ abstract class LaravelRepository implements RepositoryInterface
      */
     public function deleteWhereNotIn(string $column, array $values): void
     {
-        $this->makeQueryBuilder(fn() => $this->model->whereNotIn($column, $values)->delete());
+        $this->makeQueryBuilder(fn() => $this->model->whereNotIn($column, $values)->delete(), false);
     }
 
     public function orderBy(string $column, string $direction = 'asc'): self
