@@ -2,6 +2,7 @@
 
 namespace JoBins\LaravelRepository\Traits;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\AbstractPaginator;
@@ -27,8 +28,17 @@ trait Presentable
     protected array                $includes        = [];
     protected bool                 $skipTransformer = false;
 
-    public function setTransformer(TransformerAbstract $transformer): self
+    /**
+     * @param TransformerAbstract|string $transformer
+     *
+     * @throws BindingResolutionException
+     */
+    public function setTransformer(TransformerAbstract|string $transformer): self
     {
+        if ( is_string($transformer) ) {
+            $transformer = app()->make($transformer);
+        }
+
         $this->transformer = $transformer;
 
         return $this;

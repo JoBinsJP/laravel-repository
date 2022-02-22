@@ -3,6 +3,7 @@
 namespace JoBins\LaravelRepository\Contracts;
 
 use Closure;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Pagination\AbstractPaginator;
@@ -35,7 +36,7 @@ interface RepositoryInterface
 
     /** ********************** Transformers ************************** */
 
-    public function setTransformer(TransformerAbstract $transformer): self;
+    public function setTransformer(TransformerAbstract|string $transformer): self;
 
     public function resetTransformer(): self;
 
@@ -52,6 +53,8 @@ interface RepositoryInterface
     /** ********************* Scopes ********************************* */
 
     public function scopeQuery(Closure $scopeQuery): self;
+
+    public function getBuilder(): Builder;
 
     /** ********************* /Scopes ******************************** */
 
