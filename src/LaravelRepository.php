@@ -216,7 +216,7 @@ abstract class LaravelRepository implements RepositoryInterface
      */
     public function delete(int|string $modelId): void
     {
-        $this->makeQueryBuilder(fn() => $this->model->delete($modelId), false);
+        $this->makeQueryBuilder(fn() => $this->model->find($modelId)->delete(), false);
     }
 
     /**
